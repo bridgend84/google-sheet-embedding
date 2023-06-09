@@ -1,0 +1,44 @@
+<html>
+  <!--<script async defer src="https://apis.google.com/js/api.js" onload="handleClientLoad()"></script>-->
+  <script async defer src="https://apis.google.com/js/api.js" onload="onLoadEvent()"></script>
+  <script>
+  function handleClientLoad(apiKey, spreadsheetId, sheetName, cellId) {
+    gapi.load('client', () => {
+      gapi.client.setApiKey(apiKey);
+      gapi.client.load('sheets', 'v4', () => {
+        gapi.client.sheets.spreadsheets.values.get({
+          spreadsheetId,
+          range: sheetName + '!' + cellId,
+        }).then(res => {
+          const value = res.result.values[0][0];
+          const majom = document.getElementById("majom");
+          majom.innerHTML = value;
+        });
+      });
+    });
+  }
+
+  function onLoadEvent() {
+    const changeForm = document.getElementById("changeForm")
+    changeForm.addEventListener("click", (e) => {
+      const apiKey = document.getElementById("apiKey").value
+      const spreadsheetId = document.getElementById("spreadsheetId").value
+      const sheetName = document.getElementById("sheetName").value
+      const cellId = document.getElementById("cellId").value
+      handleClientLoad(apiKey, spreadsheetId, sheetName, cellId)
+    })
+  }
+  </script>
+  <body>
+  <br><label for="apiKey">API KEY:</label>
+  <br><input id="apiKey">
+  <br><label for="spreadsheetId">SPREADSHEET ID:</label>
+  <br><input id="spreadsheetId">
+  <br><label for="sheetName">NAME OF THE SHEET (SHEET1):</label>
+  <br><input id="sheetName">
+  <br><label for="cellId">CELL:</label>
+  <br><input id="cellId">
+  <br><button id="changeForm">CHANGE</button>
+  <p id="majom">Here will the content of the cell.</p>
+  </body>
+</html>
